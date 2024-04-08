@@ -4,15 +4,10 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+I'm Bobber Cheng, ![Bobber Cheng](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/pictures/bobber.png){: width="250" } who enjoys reading science ficture, writing coding and sharing management experience. You can checkout [my Github], [my Kaggle] and [my Huggingface], [My twitter] and [my Linkedin].
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+[my Github]: https://github.com/bobbercheng
+[my Linkedin]: https://www.linkedin.com/in/bobbercheng/
+[my Kaggle]:   https://www.kaggle.com/bobber
+[my Huggingface]: https://huggingface.co/bobber
+[My twitter]: https://twitter.com/bobbercheng
