@@ -2,7 +2,7 @@
 layout: post
 title:  "Bobber's Resume"
 date:   2024-04-07 11:39:13 -0400
-categories: introduce, resume
+categories: resume
 ---
 
 # BOBBER CHENG
