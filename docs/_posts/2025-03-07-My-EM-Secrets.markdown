@@ -17,7 +17,7 @@ If your team's morale is low, reflect on the above two points first.
 
 As your career progresses from engineer to manager, director, or CTO, your impact may multiply significantly, but your personal workload won't scale equally. Focus more strategically on long-term goals, vision, and balanced decisions is the only way to scale up your work. If you seek control, think strategically about how data flows within your business. For example, my previous CTO successfully improved our entire eCommerce platform by developing an IAM service that centrally managed authorization. Similarly, a senior director effectively boosted team productivity by setting strategic goals around exploring GenAI technologies. These types of initiatives significantly elevate the strategic value of technology within a business.
 
-[my Resume]: https://raw.githubusercontent.com/bobbercheng/blog/main/docs/assets/Resume_Bobber-Cheng_2025_shared.pdf
+[my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
 [my Github]: https://github.com/bobbercheng
 [my Linkedin]: https://www.linkedin.com/in/bobbercheng/
 [my Kaggle]:   https://www.kaggle.com/bobber

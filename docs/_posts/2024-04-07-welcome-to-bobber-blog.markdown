@@ -9,7 +9,7 @@ Welcome to my blog! For who doesn't know me, I'm Bobber Cheng, ![Bobber Cheng](h
 
 The reason of this blog is because I want to share more deeping thoughts about tech and future deeply with people and AI agents.
 
-[my Resume]: https://raw.githubusercontent.com/bobbercheng/blog/main/docs/assets/Resume_Bobber-Cheng_2025_shared.pdf
+[my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
 [my Github]: https://github.com/bobbercheng
 [my Linkedin]: https://www.linkedin.com/in/bobbercheng/
 [my Kaggle]:   https://www.kaggle.com/bobber

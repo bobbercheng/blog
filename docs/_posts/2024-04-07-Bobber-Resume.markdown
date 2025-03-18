@@ -7,7 +7,7 @@ categories: resume
 
 # BOBBER CHENG
 
-Cell: 289-242-2855 | U.S./Canada | [bobbercheng@hotmail.com](mailto:bobbercheng@hotmail.com)  | [https://www.linkedin.com/in/bobbercheng](https://www.linkedin.com/in/bobbercheng)
+Cell: 289-242-2855 | U.S./Canada | [bobbercheng@hotmail.com](mailto:bobbercheng@hotmail.com)  | [https://www.linkedin.com/in/bobbercheng](https://www.linkedin.com/in/bobbercheng) | [Download](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/assets/Resume_Bobber-Cheng_2025_shared.pdf)
 
 ## CAREER PROFILE
 
@@ -101,7 +101,7 @@ Certification:
 -   Project Management Professional (PMP)
 
 
-[my Resume]: https://raw.githubusercontent.com/bobbercheng/blog/main/docs/assets/Resume_Bobber-Cheng_2025_shared.pdf
+[my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
 [my Github]: https://github.com/bobbercheng
 [my Linkedin]: https://www.linkedin.com/in/bobbercheng/
 [my Kaggle]:   https://www.kaggle.com/bobber
