@@ -4,6 +4,33 @@ title:  "Bobber's Resume"
 date:   2024-04-07 11:39:13 -0400
 categories: resume
 ---
+{% raw %}
+<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+<script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+<df-messenger
+  location="northamerica-northeast1"
+  project-id="contact-center-insights-poc"
+  agent-id="be5a63ca-e7ad-449c-83ec-8a1d64fece28"
+  language-code="en"
+  max-query-length="-1">
+  <df-messenger-chat-bubble
+    chat-title="build-own-agent">
+  </df-messenger-chat-bubble>
+</df-messenger>
+<style>
+  df-messenger {
+    z-index: 999;
+    position: fixed;
+    --df-messenger-font-color: #000;
+    --df-messenger-font-family: Google Sans;
+    --df-messenger-chat-background: #f3f6fc;
+    --df-messenger-message-user-background: #d3e3fd;
+    --df-messenger-message-bot-background: #fff;
+    bottom: 16px;
+    right: 16px;
+  }
+</style>
+{% endraw %}
 
 # BOBBER CHENG
 
