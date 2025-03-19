@@ -14,7 +14,7 @@ categories: resume
   language-code="en"
   max-query-length="-1">
   <df-messenger-chat-bubble
-    chat-title="build-own-agent">
+    chat-title="Ask Bobber">
   </df-messenger-chat-bubble>
 </df-messenger>
 <style>
