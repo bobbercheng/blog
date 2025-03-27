@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "Product, Engineering, Knowledge graph and GraphRAG"
+date:   2021-10-10 11:39:13 -0400
+categories: ML
+---
+
+I firstly want to thank CSC CTO Andrew, previous CSC CPO Matt and tech leader Ronit. This bog is more about retrospective about my work [How CSC Generation powers product discovery with knowledge graphs using Amazon Neptune](https://aws.amazon.com/blogs/database/how-csc-generation-powers-product-discovery-with-knowledge-graphs-using-amazon-neptune/).
+
+For product, CorePIM has a good initiative to provide unified workflows in order to enrich product information and discovery signals for merch teams from different tenants/brands in CSC. It did provides good values for merch teal to enrich products and fill gaps of products merch worflow on [Sur La Table](https://www.surlatable.com/). However, it didn't provide discovery feature for merch team as Matt expected. The reason is that CSC cut budget for discovery feature in end of 2022. CorePIM is to hide complex relation of product information and just can be use a souce-of-truth to plugin to retailer platforms. Unfortunately there are many retailer platforms with different standards and there was no plugin adaptor here. We had to spend effort to build an adaptor like CorePIM <-> BigCommer etc. The slow progress of this adaptor hurt business team a lot. If I have the chance again, I will just out source CorePIM as product data storage service. It could be a set of ETLs and a set of datasets. I don't need to worry about complexity of data as it's only interpreted by different retailer platform. In other word, **resolving data relation before application is too ideal way for business problem here.**
+
+For engineering, CorePIM is the most complex system CSC built. Big values of complex system values is to simplify extended application. we use RDF/SPARQL to store knowledge graph to AWS Neptune. In fact, as engineer manager I provided tech vision of Graph RAG discovery to Andrew and Matt in earlier 2022. Discovery feature feeds rich linked knowledge graph of products into a RAG system with Weaviate as vector DB and OpenAI gpt3 as LLM service. In 2022, vector DB vendor Weaviate was very happy to sign collaboration agreement pushed by me with CSC as Weaviate was desperately to find customers. The point of knowledge graph is to have free connection between any data entity in order to do better discovery. However, there are two challenges here. One is we still prefer to do some validation for product data to prevent human mistakes, it turns out we still use some schema instead of free document. This schema limits data relation of knowledge graph. Second, complexity of relation is exponential increase as large volume of data entity(e.g. millions of products) are added and unfortunately Neptune doesn't reduce the complexity to liner even better. This challenge forces me to decreases usage of knowledge graph just as schema validation and replicate product data to document based DB AWS DynamoDB for data query. Another choice is to use . If I have the chance again, I will choose to build a POC version of e2e PIM including data storage and discovery in the begin with minus tech restriction then productize it. If so, [GraphRAG](https://aws.amazon.com/blogs/database/introducing-the-graphrag-toolkit/) will be published two years again. For anyone plan to use GraphRAG, I suggest you to double check exponential challenge.
+
+
+
+[my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
+[my Github]: https://github.com/bobbercheng
+[my Linkedin]: https://www.linkedin.com/in/bobbercheng/
+[my Kaggle]:   https://www.kaggle.com/bobber
+[my Huggingface]: https://huggingface.co/bobber
+[My twitter]: https://twitter.com/bobbercheng
