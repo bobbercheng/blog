@@ -148,6 +148,75 @@ flowchart TD
     classDef shared fill:#D6EAF8,stroke:#3498DB,stroke-width:2px;
 ```
 
+ML train/reference architecture:
+```mermaid
+flowchart TD
+    %% Environment & Setup
+    subgraph "Environment & Setup"
+        EnvSetup["Virtual Environment Setup"]:::env
+        EnvManagement["Environment Management"]:::env
+        AuxUtilities["Auxiliary Utilities"]:::env
+    end
+
+    %% Shared Infrastructure
+    subgraph "Shared Infrastructure"
+        Common["Common Utilities"]:::shared
+        Core["Core Training Pipeline & Configuration"]:::shared
+        Optimizer["Optimizer Configurations"]:::shared
+        MLLogging["ML Logging"]:::shared
+        Metrics["Metrics Computation"]:::shared
+        Reader["Data Ingestion / Reader"]:::shared
+    end
+
+    %% Model-Specific Modules
+    subgraph "Model-Specific Modules"
+        Recap["For You Heavy Ranker (Recap)"]:::project
+        TwHIN["TwHIN Embeddings"]:::project
+    end
+
+    %% External Dependency
+    External["torchrec/Nvidia GPU"]:::external
+
+    %% Connections from Environment to Shared Infrastructure
+    EnvSetup -->|"env_setup"| Common
+    EnvManagement -->|"hardware_detection"| Common
+    AuxUtilities -->|"data_prep"| Reader
+
+    %% Internal Shared Infrastructure Data Flow
+    Reader -->|"data_flow"| Common
+    Common -->|"training_control"| Core
+    Core -->|"optimizer_update"| Optimizer
+    Core -->|"logging"| MLLogging
+    Core -->|"metrics"| Metrics
+    External -->|"runtime_dependency"| Core
+
+    %% Shared to Project-Specific Flow
+    Core -->|"model_training"| Recap
+    Core -->|"model_training"| TwHIN
+
+    %% Click Events for Environment & Setup
+    click EnvSetup "https://github.com/twitter/the-algorithm-ml/tree/main/images/"
+    click EnvManagement "https://github.com/twitter/the-algorithm-ml/tree/main/machines/"
+    click AuxUtilities "https://github.com/twitter/the-algorithm-ml/tree/main/tools/"
+
+    %% Click Events for Shared Infrastructure
+    click Common "https://github.com/twitter/the-algorithm-ml/tree/main/common/"
+    click Core "https://github.com/twitter/the-algorithm-ml/tree/main/core/"
+    click Optimizer "https://github.com/twitter/the-algorithm-ml/tree/main/optimizers/"
+    click MLLogging "https://github.com/twitter/the-algorithm-ml/tree/main/ml_logging/"
+    click Metrics "https://github.com/twitter/the-algorithm-ml/tree/main/metrics/"
+    click Reader "https://github.com/twitter/the-algorithm-ml/tree/main/reader/"
+
+    %% Click Events for Model-Specific Modules
+    click Recap "https://github.com/twitter/the-algorithm-ml/tree/main/projects/home/recap/"
+    click TwHIN "https://github.com/twitter/the-algorithm-ml/tree/main/projects/twhin/"
+
+    %% Styles
+    classDef env fill:#fdd,stroke:#333,stroke-width:2px;
+    classDef shared fill:#dfd,stroke:#333,stroke-width:2px;
+    classDef project fill:#ddf,stroke:#333,stroke-width:2px;
+    classDef external fill:#ffd,stroke:#333,stroke-width:2px;
+```
 
 {% raw %}
 <script src="https://giscus.app/client.js"
