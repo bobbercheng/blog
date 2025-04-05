@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Ray"
+title:  "Ray architecture"
 date:   2025-04-04 10:39:13 -0400
 categories: ML
 tags: ML
@@ -16,6 +16,7 @@ tags: ML
 </script>
 {% endraw %}
 
+Ray architecture:
 
 ```mermaid
 flowchart TD
