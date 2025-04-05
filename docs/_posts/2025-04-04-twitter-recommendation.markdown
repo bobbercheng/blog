@@ -14,6 +14,7 @@ tags: ML
     codeBlock.parentElement.outerHTML = `<pre class="mermaid">${codeBlock.textContent}</pre>`;
   });
 </script>
+
 {% endraw %}
 
 Twitter recommendation architecture:
@@ -146,6 +147,25 @@ flowchart TD
     classDef ml fill:#FDEBD0,stroke:#CA6F1E,stroke-width:2px;
     classDef shared fill:#D6EAF8,stroke:#3498DB,stroke-width:2px;
 ```
+
+
+{% raw %}
+<script src="https://giscus.app/client.js"
+        data-repo="bobbercheng/blog"
+        data-repo-id="R_kgDOLrBZsw"
+        data-category="Ideas"
+        data-category-id="DIC_kwDOLrBZs84Coy7e"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+{% endraw %}
 
 
 [my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
