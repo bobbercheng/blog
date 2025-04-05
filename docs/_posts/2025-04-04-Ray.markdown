@@ -1,0 +1,98 @@
+---
+layout: post
+title:  "Ray"
+date:   2025-03-14 10:39:13 -0400
+categories: ML
+tags: ML
+---
+
+{% raw %}
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+  document.querySelectorAll('pre > code.language-mermaid').forEach((codeBlock) => {
+    codeBlock.parentElement.outerHTML = `<pre class="mermaid">${codeBlock.textContent}</pre>`;
+  });
+</script>
+{% endraw %}
+
+
+```mermaid
+flowchart TD
+    %% Top Layer: User and High-Level APIs
+    A["User Application"]
+    subgraph "High-Level AI Libraries"
+        PA["Python API and High‑Level Extensions (AI libraries)"]:::ai
+        RL["RLlib (Reinforcement Learning Library)"]:::ai
+    end
+
+    %% Middle Layer: Ray Core Runtime
+    subgraph "Ray Core Runtime"
+        subgraph "Head Node"
+            GCS["Global Control Store (GCS)"]:::core
+            RH["Raylet (Node Manager)"]:::core
+            RPC["RPC/Communication Infrastructure"]:::core
+        end
+        subgraph "Worker Node"
+            RW["Raylet (Node Manager)"]:::core
+            CW["Core Worker"]:::core
+            OS["Object Store"]:::core
+        end
+    end
+
+    %% Bottom Layer: External Integrations and Tools
+    subgraph "External Integrations"
+        RD["Ray Dashboard"]:::external
+        BC["Build and Configuration Files"]:::external
+    end
+
+    %% Connections from Top Layer to Core Runtime
+    A -->|"submits tasks"| PA
+    PA -->|"invokes tasks"| CW
+    PA -->|"triggers RL workflows"| RL
+
+    %% Within Core Runtime - Head Node interactions
+    GCS -->|"schedules tasks"| RH
+    RH -->|"communicates via RPC"| RPC
+    RPC -->|"coordinated with"| GCS
+
+    %% Within Core Runtime - Worker Node interactions
+    RW -->|"allocates resources"| CW
+    CW -->|"stores results in"| OS
+
+    %% Inter-node communications
+    RH -->|"management commands"| RW
+    GCS -->|"global state"| RW
+
+    %% External Integrations connections
+    RD <-->|"monitors"| GCS
+    RD <-->|"monitors"| RH
+    RD <-->|"monitors"| RW
+    BC -->|"builds and tests"| PA
+    BC -->|"builds and tests"| GCS
+
+    %% Click Events
+    click GCS "https://github.com/bobbercheng/ray/tree/master/src/ray/gcs"
+    click RH "https://github.com/bobbercheng/ray/tree/master/src/ray/raylet"
+    click RW "https://github.com/bobbercheng/ray/tree/master/src/ray/raylet"
+    click CW "https://github.com/bobbercheng/ray/tree/master/src/ray/core_worker"
+    click OS "https://github.com/bobbercheng/ray/tree/master/src/ray/object_manager/plasma"
+    click RPC "https://github.com/bobbercheng/ray/tree/master/src/ray/rpc"
+    click PA "https://github.com/bobbercheng/ray/tree/master/python/ray"
+    click RL "https://github.com/bobbercheng/ray/tree/master/rllib"
+    click RD "https://github.com/bobbercheng/ray/tree/master/python/ray/dashboard"
+    click BC "https://github.com/bobbercheng/ray/tree/master/Bazel-related files (e.g., .bazelrc, BUILD.bazel, WORKSPACE, and bazel/)"
+
+    %% Class definitions for colors
+    classDef core fill:#ADD8E6,stroke:#000,stroke-width:1px;
+    classDef ai fill:#90EE90,stroke:#000,stroke-width:1px;
+    classDef external fill:#FFD700,stroke:#000,stroke-width:1px;
+```
+
+
+[my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
+[my Github]: https://github.com/bobbercheng
+[my Linkedin]: https://www.linkedin.com/in/bobbercheng/
+[my Kaggle]:   https://www.kaggle.com/bobber
+[my Huggingface]: https://huggingface.co/bobber
+[My twitter]: https://twitter.com/bobbercheng
