@@ -92,7 +92,7 @@ Intrado  Associate Development Manager, Mississauga (2019 - 2021)
 -   Directed high-quality programming and applied the best practices to cloud services and desktop/mobile apps to reduce major vulnerabilities and improve service performance iteratively.
     
 
--   Migrated Intrado microservices to GCP with ELK and achieved significant improvement of Intrado meeting service capability up to 10K+ users with 30%+ cost reduction.
+-   Migrated Intrado microservices to GCP/Cloud Foundry with ELK and achieved significant improvement of Intrado meeting service capability up to 10K+ users with 30%+ cost reduction.
     
 
 West  Team Leader, Shanghai (2007 - 2019)
