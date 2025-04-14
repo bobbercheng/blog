@@ -22,12 +22,16 @@ I got serious complaint from one team member, he didn't get properly reward afte
 One common mistake is that soft rewards besides salary are underestimated. This is why my staff engineer was complaining. It's the manager's duty to create and highlight soft rewards. 
 The challenge here is that soft rewards are hard to quantify/standardize with engineering tech but still possible. If you regard your team process as RL training, reward is the key to driving the team to excellence. Soft reward maybe be only available parameters you could adjust.
 
+Once you have soft reward process, trust is the key. It's very important to earn trust from stakeholders and the team. You may have to be EQ excellent, hands-on excellent, or academic excellent even humor excellent here. Another thing is 
+It's nature that you cannot set good reward process in the begin and you have to adjust it from the feedback. It's okay as long as it doesn't hurt the team a lot.
+
 Second, as the manager, you must know the team's capability for different scenarios like low-hanging fruit and moon goals. 
 Don't be afraid to discuss moon goals. In fact, I encourage you to always reserve some time for the team to discuss moon goals. We either land on the moon with massive efforts as pioneers or just land here with a space ticket, but we will all land on the moon eventually. If you don't have a budget for aggressive/hard goals, 
 be prepared for earlier adoption. This helps mitigate and resolve issue #1.
 
 Finally, as the manager, you always get pressure to deliver features more often. Please hold it and try to offload extension features with self-service or automate them with tools/AI. It's very important to minimize team work and only focus on high-impact features as they are the core.
 
+My simple answer to archive engineering/project/people excellent is to follow elite team's sharing from top companies with the team special reward process.
 
 
 {% raw %}
