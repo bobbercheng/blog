@@ -8,6 +8,7 @@ I'm Bobber Cheng, ![Bobber Cheng](https://raw.githubusercontent.com/bobbercheng/
 You can checkout [my Blog], [my Resume], [my Github], [my Kaggle] [my Huggingface], [My twitter] and [my Linkedin].
 
 [my Blog]: https://bobbercheng.github.io/blog/
+[my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
 [my Github]: https://github.com/bobbercheng
 [my Linkedin]: https://www.linkedin.com/in/bobbercheng/
 [my Kaggle]:   https://www.kaggle.com/bobber
