@@ -38,7 +38,7 @@ Cell: 289-242-2855 | U.S./Canada | [bobbercheng@hotmail.com](mailto:bobbercheng@
 
 ## CAREER PROFILE
 
-I am a self-motivated and data-driven tech leader.  
+I am an inclusive AI engineer leader.  
   
 Things I've been doing lately:  
 - GenAI platform of code self-improvement for all engineers.  
