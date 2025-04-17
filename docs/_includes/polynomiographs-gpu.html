@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kalantari polynomiographs – GPU (first two)</title>
+<style>body{margin:0;background:#000;overflow:hidden}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js";
+
+/* ── scene boilerplate (unchanged) ─────────────────────────── */
+const scene = new THREE.Scene();
+const cam   = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
+cam.position.set(0, 0, 10);
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+addEventListener('resize', () => {
+  cam.aspect = innerWidth / innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ── palette & constants (same) ───────────────────────────── */
+const PAL = [
+  [4, 90,255],[255, 4,60],[0,200,90],
+  [230,230,10],[180,40,240],[250,150,40],
+  [40,210,210],[255,255,255],[160,160,160]
+].map(c=>c.map(v=>v/255));
+const MAX_DEG = 20, MAX_ROOTS = 18, MAX_ITER = 45;
+
+/* ── tiny Durand–Kerner for sextic roots ─────────────────── */
+function rootsDK(c, maxIter=80, eps=1e-12){
+  const n=c.length-1;
+  if(n===1) return [[-c[0]/c[1],0]];
+  const r=[...Array(n)].map((_,k)=>[Math.cos(2*Math.PI*k/n),Math.sin(2*Math.PI*k/n)]);
+  const horner=z=>{let[pr,pi]=[c[n],0];for(let i=n-1;i>=0;i--){const[zr,zi]=z;[pr,pi]=[pr*zr-pi*zi+c[i],pr*zi+pi*zr];}return[pr,pi];};
+  for(let it=0;it<maxIter;it++){
+    let conv=true;
+    for(let i=0;i<n;i++){
+      let[xr,xi]=r[i],[dr,di]=[1,0];
+      for(let j=0;j<n;j++) if(j!==i){
+        const[zr,zi]=r[j],[ur,ui]=[xr-zr,xi-zi];
+        [dr,di]=[dr*ur-di*ui, dr*ui+di*ur];
+      }
+      const[pr,pi]=horner(r[i]),den=dr*dr+di*di;
+      const[qr,qi]=[(pr*dr+pi*di)/den,(pi*dr-pr*di)/den];
+      r[i]=[xr-qr,xi-qi]; if(Math.hypot(qr,qi)>eps) conv=false;
+    }
+    if(conv) break;
+  }
+  return r;
+}
+
+/* ── shader (identical to single version) ─────────────────── */
+const FRAG = `#define MAX_DEG ${MAX_DEG}
+#define MAX_ROOTS ${MAX_ROOTS}
+#define DOMAIN 2.5
+precision highp float;
+uniform float uCoeffs[MAX_DEG];
+uniform int   uDeg, uRootCnt;
+uniform vec2  uRoots[MAX_ROOTS];
+uniform vec3  uPal[9];
+uniform float uMaxIter;
+uniform bool  uDebug;
+varying vec2  vUv;
+vec2 cmul(vec2 a, vec2 b){ return vec2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x); }
+void evalPD(in vec2 z, out vec2 p, out vec2 dp){
+  p  = vec2(uCoeffs[uDeg], 0.0); dp = vec2(0.0);
+  for(int i=MAX_DEG-1;i>=0;i--){ if(i>uDeg) continue; dp = cmul(dp, z) + p; p = cmul(p, z) + vec2(uCoeffs[i],0.0); }
+}
+int nearestRoot(vec2 z){
+  float md=1e9; int idx=0;
+  for(int i=0;i<MAX_ROOTS;i++){ if(i>=uRootCnt) break;
+    float d=distance(z,uRoots[i]); if(d<md){md=d; idx=i;} }
+  return idx % 9;
+}
+void main(){
+  vec2 z = vec2(mix(-DOMAIN, DOMAIN, vUv.x), mix(-DOMAIN, DOMAIN, vUv.y));
+  vec2 p, dp; float it = 0.0;
+  for(int k=0;k<${MAX_ITER}; k++){
+    evalPD(z, p, dp);
+    if(length(p) < 1e-8) break;
+    float d2 = max(dot(dp, dp), 1e-12);
+    vec2 step = cmul(p, vec2(dp.x, -dp.y)) / d2;
+    float m = length(step); if(m > 4.0) step *= 4.0 / m;
+    z -= step; if(length(z) > 1e6){ it = uMaxIter; break; } it++;
+  }
+  vec3 base = uPal[nearestRoot(z)];
+  vec3 col  = uDebug ? base : mix(base, vec3(1.0), (it+1.0)/(uMaxIter+1.0));
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+/* ── helper to make a material/mesh for any polynomial ─────── */
+function makePolyMesh(poly, xPos){
+  const coeff = new Float32Array(MAX_DEG).fill(0);
+  poly.forEach((v,i)=>coeff[i]=v);
+  const roots = rootsDK(poly);
+  const padded = Array.from({length:MAX_ROOTS}, ()=>new THREE.Vector2(0,0));
+  roots.forEach((r,i)=>padded[i].set(r[0],r[1]));
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms:{
+      uCoeffs:{value:coeff},
+      uDeg:{value:poly.length-1},
+      uRoots:{value:padded},
+      uRootCnt:{value:roots.length},
+      uPal:{value:PAL.map(c=>new THREE.Vector3(...c))},
+      uMaxIter:{value:MAX_ITER},
+      uDebug:{value:false}
+    },
+    vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position, 1.0);} `,
+    fragmentShader:FRAG
+  });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(4,4), mat);
+  mesh.position.set(xPos, 0, 0);
+  scene.add(mesh);
+  return mat;
+}
+
+/* ── build both planes ─────────────────────────────────────── */
+const materials = [
+  makePolyMesh([-1,0,0,1],             -3),   // cubic
+  makePolyMesh([-1,0,0,8,0,0,1],        3)    // sextic
+];
+
+/* ── debug toggle helper ───────────────────────────────────── */
+window.__shaderDebug = flag => materials.forEach(m => m.uniforms.uDebug.value = !!flag);
+
+/* ── animate ──────────────────────────────────────────────── */
+(function loop(){ requestAnimationFrame(loop); renderer.render(scene, cam); })();
+__shaderDebug(true);
+</script>
+</body>
+</html>

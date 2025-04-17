@@ -1,0 +1,168 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Kalantari Polynomiographs – Three.js (GPU‑friendly + tracing)</title>
+  <style>
+    html,body{margin:0;height:100%;overflow:hidden;background:#111;color:#eee;font-family:system-ui;}
+    #info{position:absolute;top:10px;left:10px;z-index:10;background:rgba(0,0,0,.6);padding:8px 12px;border-radius:8px;font-size:14px}
+  </style>
+</head>
+<body>
+  <div id="info">Drag to rotate — mouse‑wheel to zoom.<br/>Polynomiographs</div>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+    </script>  
+  <script type="module">
+  import * as THREE from 'three';
+
+  import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+
+  // ────────────────────────────────────────────────
+  //   Helpers (complex arithmetic + polynomial utils)
+  // ────────────────────────────────────────────────
+  const cmul = (a,b)=>[a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]];
+  const cdiv = (a,b)=>{
+    const d=b[0]*b[0]+b[1]*b[1];
+    return [(a[0]*b[0]+a[1]*b[1])/d, (a[1]*b[0]-a[0]*b[1])/d];
+  };
+  const polyEval = (c,z)=>{
+    let r=[c[c.length-1],0];
+    for(let i=c.length-2;i>=0;i--){r=cmul(r,z);r[0]+=c[i];}
+    return r;
+  };
+  const derivCoeffs = c=>c.slice(1).map((v,i)=>v*(i+1));
+  const polyMul=(a,b)=>{
+    const r=new Float64Array(a.length+b.length-1).fill(0);
+    for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)r[i+j]+=a[i]*b[j];
+    return Array.from(r);
+  };
+
+  // ────────────────────────────────────────────────
+  //   Tunables & trace helpers
+  // ────────────────────────────────────────────────
+  const SIZE = 400;           // ↓ from 600 → ~2.25× faster per image
+  const MAX_ITER = 45;        // fewer iterations still shows nice detail
+  const TOL = 1e-6;
+  const DOMAIN = [-2.5,2.5];
+  const ROOT_COL = [
+    [4,90,255],[255,4,60],[0,200,90],[230,230,10],
+    [180,40,240],[250,150,40],[40,210,210],[255,255,255],[0,0,0]
+  ];
+
+  const log = (msg)=>console.log(`%c[Poly] ${msg}`,'color:#8cf');
+
+  // ────────────────────────────────────────────────
+  //   CPU fractal generator (optimised)
+  // ────────────────────────────────────────────────
+  function newtonCanvas(coeffs, tag="poly"){
+    console.time(tag);
+    const can=document.createElement('canvas');
+    can.width=can.height=SIZE;
+    const ctx=can.getContext('2d',{willReadFrequently:false});
+    const img=new ImageData(SIZE,SIZE);
+    const dat=img.data; // Uint8ClampedArray
+
+    const der=derivCoeffs(coeffs);
+    const roots=[];
+    const classify=z=>{
+      for(let i=0;i<roots.length;i++){
+        const dx=roots[i][0]-z[0],dy=roots[i][1]-z[1];
+        if(dx*dx+dy*dy<1e-4) return i;
+      }
+      roots.push(z);return roots.length-1;
+    };
+
+    const dx=(DOMAIN[1]-DOMAIN[0])/(SIZE-1);
+    const tol2=TOL*TOL;
+    const stride4=SIZE*4;
+
+    for(let y=0, p=0; y<SIZE; y++, p+=stride4){
+      if(y%100===0) log(`row ${y}/${SIZE} (${((y/SIZE)*100)|0}%) of ${tag}`);
+      const im=DOMAIN[0]+y*dx;
+      let xdat=p;
+      for(let x=0; x<SIZE; x++, xdat+=4){
+        let zr=DOMAIN[0]+x*dx, zi=im;
+        let iter=0;
+        for(; iter<MAX_ITER; iter++){
+          const [pr,pi]=polyEval(coeffs,[zr,zi]);
+          if(pr*pr+pi*pi<tol2) break;
+          const [dpr,dpi]=polyEval(der,[zr,zi]);
+          const [qr,qi]=cdiv([pr,pi],[dpr,dpi]);
+          zr-=qr; zi-=qi;
+        }
+        const idx=classify([zr,zi])%ROOT_COL.length;
+        const mu=(iter+1)/(MAX_ITER+1);
+        const base=ROOT_COL[idx];
+        dat[xdat  ]=base[0]*(1-mu)+255*mu;
+        dat[xdat+1]=base[1]*(1-mu)+255*mu;
+        dat[xdat+2]=base[2]*(1-mu)+255*mu;
+        dat[xdat+3]=255;
+      }
+    }
+
+    ctx.putImageData(img,0,0);
+    console.timeEnd(tag);
+    return can;
+  }
+
+  // ────────────────────────────────────────────────
+  //   Build coefficient list (8 polynomials)
+  // ────────────────────────────────────────────────
+  const polys=[
+    [-1,0,0,1],
+    [-1,0,0,8,0,0,1],
+    [64,0,0,-64,0,0,0,0,0,1]
+  ];
+  for(const n of[3,4,5]){
+    const p1=Array(n+1).fill(0);p1[0]=-1;p1[n]=1;
+    const p2=Array(n+2).fill(0);p2[1]=-1;p2[n+1]=1/(n+1);
+    polys.push(polyMul(p1,p2));
+  }
+  polys.push([-1,...Array(11).fill(0),1]);
+  const pb=Array(19).fill(0);pb[0]=-0.4;pb[6]=-1;pb[12]=0.4;pb[18]=1;polys.push(pb);
+
+  // ────────────────────────────────────────────────
+  //   Three.js Scene
+  // ────────────────────────────────────────────────
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,100);
+  cam.position.set(0,0,10);
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.setSize(innerWidth,innerHeight);
+  document.body.appendChild(renderer.domElement);
+  new OrbitControls(cam,renderer.domElement);
+
+  const cols=4, spacing=2.4;
+
+  Promise.all(polys.map((coeffs,i)=>{
+    return new Promise((resolve)=>{
+      const tex=new THREE.CanvasTexture(newtonCanvas(coeffs,`poly-${i+1}`));
+      tex.colorSpace=THREE.SRGBColorSpace;
+      const mat=new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide});
+      const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat);
+      const r=Math.floor(i/cols),c=i%cols;
+      mesh.position.set((c-(cols-1)/2)*spacing,(1-r)*spacing,0);
+      scene.add(mesh);
+      resolve();
+    });
+  })).then(()=>{
+    console.log('All polynomiographs loaded');
+  });
+
+  const onResize=()=>{
+    cam.aspect=innerWidth/innerHeight;
+    cam.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+  };
+  window.addEventListener('resize',onResize);
+  onResize();
+
+  renderer.setAnimationLoop(()=>renderer.render(scene,cam));
+  </script>
+</body>
+</html>

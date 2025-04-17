@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kalantari polynomiograph – GPU colour (debug toggle fixed)</title>
+<style>body{margin:0;background:#000;overflow:hidden}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js";
+
+/* ── scene boilerplate ────────────────────────────────────────── */
+const scene = new THREE.Scene();
+const cam   = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
+cam.position.set(0, 0, 6);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+addEventListener('resize', () => {
+  cam.aspect = innerWidth / innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ── palette + constants ─────────────────────────────────────── */
+const PAL = [
+  [4, 90, 255],  // blue
+  [255, 4, 60],  // red
+  [0, 200, 90]   // green
+].map(c => c.map(v => v / 255));
+const MAX_DEG = 4,
+      MAX_ITER = 45;
+
+/* ── fragment shader (root‑based colours + debug) ────────────── */
+const FRAG = `#define MAX_DEG ${MAX_DEG}
+#define DOMAIN 2.5
+precision highp float;
+
+uniform float uCoeffs[MAX_DEG];
+uniform vec2  uRoots[3];
+uniform vec3  uPal[3];
+uniform float uMaxIter;
+uniform bool  uDebug;              // false = fade, true = flat colours
+
+varying vec2 vUv;
+
+vec2 cmul(vec2 a, vec2 b){ return vec2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x); }
+
+void evalPD(in vec2 z, out vec2 p, out vec2 dp){
+  p  = vec2(uCoeffs[3], 0.0);
+  dp = vec2(0.0);
+  for(int i = MAX_DEG - 2; i >= 0; i--){
+    dp = cmul(dp, z) + p;
+    p  = cmul(p,  z) + vec2(uCoeffs[i], 0.0);
+  }
+}
+
+int nearestRoot(vec2 z){
+  float d0 = distance(z, uRoots[0]);
+  float d1 = distance(z, uRoots[1]);
+  float d2 = distance(z, uRoots[2]);
+  return d0 < d1 ? (d0 < d2 ? 0 : 2) : (d1 < d2 ? 1 : 2);
+}
+
+void main(){
+  vec2 z = vec2(mix(-DOMAIN, DOMAIN, vUv.x), mix(-DOMAIN, DOMAIN, vUv.y));
+  vec2 p, dp;
+  float it = 0.0;
+  for(int k = 0; k < ${MAX_ITER}; k++){
+    evalPD(z, p, dp);
+    if(length(p) < 1e-8) break;
+    float d2 = max(dot(dp, dp), 1e-12);
+    vec2  step = cmul(p, vec2(dp.x, -dp.y)) / d2;
+    float m = length(step);
+    if(m > 4.0) step *= 4.0 / m;
+    z -= step;
+    if(length(z) > 1e6){ it = uMaxIter; break; }
+    it++;
+  }
+  int idx = nearestRoot(z);
+  vec3 base = uPal[idx];
+  vec3 col  = uDebug ? base : mix(base, vec3(1.0), (it + 1.0) / (uMaxIter + 1.0));
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+/* ── coefficients & roots for z^3 − 1 ─────────────────────────── */
+const coeff = new Float32Array([-1, 0, 0, 1]);
+const roots = [
+  new THREE.Vector2( 1.0,  0.0),
+  new THREE.Vector2(-0.5,  0.8660254),
+  new THREE.Vector2(-0.5, -0.8660254)
+];
+
+/* ── material + plane ────────────────────────────────────────── */
+const mat = new THREE.ShaderMaterial({
+  uniforms: {
+    uCoeffs : { value: coeff },
+    uRoots  : { value: roots },
+    uPal    : { value: PAL.map(c => new THREE.Vector3(...c)) },
+    uMaxIter: { value: MAX_ITER },
+    uDebug  : { value: false }            // toggle in console
+  },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: FRAG
+});
+
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(4, 4), mat));
+
+
+/* ── animate ─────────────────────────────────────────────────── */
+(function loop(){ requestAnimationFrame(loop); renderer.render(scene, cam); })();
+
+// expose for quick testing in DevTools
+window.__shaderDebug = (flag = true) => { mat.uniforms.uDebug.value = flag; };
+__shaderDebug(true);
+</script>
+</body>
+</html>
