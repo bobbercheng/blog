@@ -1,65 +1,104 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kalantari polynomiograph – GPU colour (debug toggle fixed)</title>
+<title>Kalantari polynomiograph – GPU colour (debug toggle fixed)</title>
 <style>body{margin:0;background:#000;overflow:hidden}</style>
 </head>
 <body>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  
 <script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js";
+import * as THREE from 'three';
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/controls/OrbitControls.js";
 
 /* ── scene boilerplate ────────────────────────────────────────── */
 const scene = new THREE.Scene();
 const cam   = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
-cam.position.set(0, 0, 6);
+cam.position.set(0, 0, 12);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 addEventListener('resize', () => {
   cam.aspect = innerWidth / innerHeight;
   cam.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
 });
 
 /* ── palette + constants ─────────────────────────────────────── */
-const PAL = [
-  [4, 90, 255],  // blue
-  [255, 4, 60],  // red
-  [0, 200, 90]   // green
-].map(c => c.map(v => v / 255));
-const MAX_DEG = 4,
-      MAX_ITER = 45;
+// Colors based on Python version
+const ROOT_COLORS_RGB = [
+  [4, 90, 255],     // blue
+  [255, 4, 60],     // red
+  [0, 200, 90],     // green
+  [230, 230, 10],   // yellow
+  [180, 40, 240],   // purple
+  [250, 150, 40],   // orange
+  [40, 210, 210],   // cyan-ish
+  [255, 255, 255],  // white
+  [0, 0, 0],        // black
+];
 
-/* ── fragment shader (root‑based colours + debug) ────────────── */
-const FRAG = `#define MAX_DEG ${MAX_DEG}
+// Helper to get first N colors and normalize
+const getPalette = (n) => ROOT_COLORS_RGB.slice(0, n).map(c => c.map(v => v / 255));
+
+const PAL3 = getPalette(3);
+const PAL6 = getPalette(6);
+
+const MAX_DEG_SUPPORT = 6; // Max degree shader can handle
+const MAX_ITER = 45;
+
+/* ── fragment shader (updated for variable degree) ───────────── */
+const FRAG_SOURCE = `#define MAX_DEG_SUPPORT ${MAX_DEG_SUPPORT}
 #define DOMAIN 2.5
 precision highp float;
 
-uniform float uCoeffs[MAX_DEG];
-uniform vec2  uRoots[3];
-uniform vec3  uPal[3];
+uniform float uCoeffs[MAX_DEG_SUPPORT + 1]; // Coeffs c0..c[degree]
+uniform vec2  uRoots[MAX_DEG_SUPPORT];     // Roots r1..r[degree]
+uniform vec3  uPal[MAX_DEG_SUPPORT];       // Palette p1..p[degree]
 uniform float uMaxIter;
-uniform bool  uDebug;              // false = fade, true = flat colours
+uniform bool  uDebug;                      // false = fade, true = flat colours
+uniform int   uActualDegree;               // Actual degree for this instance
 
 varying vec2 vUv;
 
 vec2 cmul(vec2 a, vec2 b){ return vec2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x); }
 
+// Evaluate polynomial P(z) and its derivative P'(z) using Horner's method
 void evalPD(in vec2 z, out vec2 p, out vec2 dp){
-  p  = vec2(uCoeffs[3], 0.0);
+  p = vec2(uCoeffs[uActualDegree], 0.0); // Start with highest coefficient c[degree]
   dp = vec2(0.0);
-  for(int i = MAX_DEG - 2; i >= 0; i--){
-    dp = cmul(dp, z) + p;
-    p  = cmul(p,  z) + vec2(uCoeffs[i], 0.0);
+  // Loop from c[degree-1] down to c0
+  for(int i = uActualDegree - 1; i >= 0; i--){
+    dp = cmul(dp, z) + p;                 // Update derivative based on *previous* P value
+    p  = cmul(p,  z) + vec2(uCoeffs[i], 0.0); // Update P value
   }
 }
 
+// Find index of the root nearest to z
 int nearestRoot(vec2 z){
-  float d0 = distance(z, uRoots[0]);
-  float d1 = distance(z, uRoots[1]);
-  float d2 = distance(z, uRoots[2]);
-  return d0 < d1 ? (d0 < d2 ? 0 : 2) : (d1 < d2 ? 1 : 2);
+  int   minIdx = 0;
+  float minDistSq = distance(z, uRoots[0]); // Use distance squared to avoid sqrt
+  minDistSq *= minDistSq;
+
+  // Loop through remaining roots (1 to degree-1)
+  for(int k = 1; k < uActualDegree; k++){
+    float distSq = distance(z, uRoots[k]);
+    distSq *= distSq;
+    if(distSq < minDistSq){
+      minDistSq = distSq;
+      minIdx = k;
+    }
+  }
+  return minIdx;
 }
 
 void main(){
@@ -68,50 +107,155 @@ void main(){
   float it = 0.0;
   for(int k = 0; k < ${MAX_ITER}; k++){
     evalPD(z, p, dp);
-    if(length(p) < 1e-8) break;
-    float d2 = max(dot(dp, dp), 1e-12);
-    vec2  step = cmul(p, vec2(dp.x, -dp.y)) / d2;
+    if(length(p) < 1e-8) break; // Converged
+
+    // Newton step: z = z - p(z)/p'(z)
+    float dp2 = dot(dp, dp);
+    if(dp2 < 1e-16) break; // Avoid division by zero if derivative is too small
+
+    vec2 step = cmul(p, vec2(dp.x, -dp.y)) / dp2; // p * conj(dp) / |dp|^2
+
+    // Basic Basin Boundary (step limiting - optional)
     float m = length(step);
     if(m > 4.0) step *= 4.0 / m;
+
     z -= step;
+
+    // Divergence check
     if(length(z) > 1e6){ it = uMaxIter; break; }
     it++;
   }
-  int idx = nearestRoot(z);
-  vec3 base = uPal[idx];
-  vec3 col  = uDebug ? base : mix(base, vec3(1.0), (it + 1.0) / (uMaxIter + 1.0));
+
+  int idx = nearestRoot(z); // Find nearest root index (0 to uActualDegree-1)
+
+  // Coloring based on root index and iteration count
+  vec3 base = uPal[idx]; // Color determined by the root
+  vec3 col = uDebug
+             ? base
+             : mix(base, vec3(1.0), (it + 1.0) / (uMaxIter + 1.0)); // Fade to white based on iterations
+
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-/* ── coefficients & roots for z^3 − 1 ─────────────────────────── */
-const coeff = new Float32Array([-1, 0, 0, 1]);
-const roots = [
+const VERTEX_SHADER = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+
+/* ── Polynomial Data ─────────────────────────────────────────── */
+
+// Polynomial 1: z^3 - 1
+const p1_coeffs = [-1, 0, 0, 1];
+const p1_roots = [
   new THREE.Vector2( 1.0,  0.0),
   new THREE.Vector2(-0.5,  0.8660254),
   new THREE.Vector2(-0.5, -0.8660254)
 ];
+const p1_pal = PAL3; // Use 3-color palette
 
-/* ── material + plane ────────────────────────────────────────── */
-const mat = new THREE.ShaderMaterial({
-  uniforms: {
-    uCoeffs : { value: coeff },
-    uRoots  : { value: roots },
-    uPal    : { value: PAL.map(c => new THREE.Vector3(...c)) },
-    uMaxIter: { value: MAX_ITER },
-    uDebug  : { value: false }            // toggle in console
-  },
-  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-  fragmentShader: FRAG
-});
+// Polynomial 2: z^6 + 8z^3 - 1
+const p2_coeffs = [-1, 0, 0, 8, 0, 0, 1];
+const r17_4 = Math.sqrt(17) - 4;
+const r17_4_cbrt = Math.cbrt(r17_4 > 0 ? r17_4 : -r17_4) * (r17_4 > 0 ? 1 : -1); // Handle potential negative inside cbrt
+const r4_17 = 4 + Math.sqrt(17);
+const r4_17_cbrt = Math.cbrt(r4_17);
+const sqrt3_2 = Math.sqrt(3) / 2;
+const p2_roots = [
+  new THREE.Vector2(r17_4_cbrt, 0.0),
+  new THREE.Vector2(-0.5 * r17_4_cbrt,  sqrt3_2 * r17_4_cbrt),
+  new THREE.Vector2(-0.5 * r17_4_cbrt, -sqrt3_2 * r17_4_cbrt),
+  new THREE.Vector2(-r4_17_cbrt, 0.0),
+  new THREE.Vector2( 0.5 * r4_17_cbrt, -sqrt3_2 * r4_17_cbrt),
+  new THREE.Vector2( 0.5 * r4_17_cbrt,  sqrt3_2 * r4_17_cbrt)
+];
+const p2_pal = PAL6; // Use 6-color palette
 
-scene.add(new THREE.Mesh(new THREE.PlaneGeometry(4, 4), mat));
+/* ── Material Creation Function ──────────────────────────────── */
 
+function createNewtonFractalMaterial(coefficients, roots, palette) {
+  const actualDegree = coefficients.length - 1;
+
+  // 1. Pad Coefficients
+  const paddedCoeffs = new Float32Array(MAX_DEG_SUPPORT + 1).fill(0);
+  paddedCoeffs.set(coefficients);
+
+  // 2. Pad Roots
+  const paddedRoots = [...roots];
+  while (paddedRoots.length < MAX_DEG_SUPPORT) {
+    paddedRoots.push(new THREE.Vector2(0, 0)); // Pad with dummy roots
+  }
+
+  // 3. Pad Palette (as Vector3)
+  const paddedPalVec = palette.map(c => new THREE.Vector3(...c));
+  while (paddedPalVec.length < MAX_DEG_SUPPORT) {
+    paddedPalVec.push(new THREE.Vector3(0, 0, 0)); // Pad with black
+  }
+
+  // 4. Create Material
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uCoeffs : { value: paddedCoeffs },
+      uRoots  : { value: paddedRoots },
+      uPal    : { value: paddedPalVec },
+      uMaxIter: { value: MAX_ITER },
+      uDebug  : { value: false },
+      uActualDegree: { value: actualDegree }
+    },
+    vertexShader: VERTEX_SHADER,
+    fragmentShader: FRAG_SOURCE
+  });
+}
+
+/* ── Create Materials ─────────────────────────────────────────── */
+
+const mat1 = createNewtonFractalMaterial(p1_coeffs, p1_roots, p1_pal);
+const mat2 = createNewtonFractalMaterial(p2_coeffs, p2_roots, p2_pal);
+
+/* ── Grid Setup ───────────────────────────────────────────────── */
+// Create 2x4 grid of planes
+const rows = 2;
+const cols = 4;
+const planeSize = 2.0; // Size of each individual plane
+const spacing = 0.5;   // Spacing between planes
+const baseGeometry = new THREE.PlaneGeometry(planeSize, planeSize);
+
+const totalWidth = cols * planeSize + (cols - 1) * spacing;
+const totalHeight = rows * planeSize + (rows - 1) * spacing;
+const startX = -totalWidth / 2 + planeSize / 2;
+const startY = totalHeight / 2 - planeSize / 2;
+
+for (let i = 0; i < rows; i++) {
+  for (let j = 0; j < cols; j++) {
+    let currentMat;
+    if (i === 0 && j === 1) { // Second image
+      currentMat = mat2;
+    } else {
+      currentMat = mat1;
+    }
+    const mesh = new THREE.Mesh(baseGeometry, currentMat);
+    mesh.position.x = startX + j * (planeSize + spacing);
+    mesh.position.y = startY - i * (planeSize + spacing);
+    scene.add(mesh);
+  }
+}
+
+// Add OrbitControls
+const controls = new OrbitControls(cam, renderer.domElement);
+controls.enableDamping = true; // Optional: adds inertia to movement
 
 /* ── animate ─────────────────────────────────────────────────── */
-(function loop(){ requestAnimationFrame(loop); renderer.render(scene, cam); })();
+(function loop(){
+  requestAnimationFrame(loop);
+  controls.update();
+  renderer.render(scene, cam);
+})();
 
-// expose for quick testing in DevTools
-window.__shaderDebug = (flag = true) => { mat.uniforms.uDebug.value = flag; };
+// Updated debug toggle to handle potentially many materials in the future
+const materials = [mat1, mat2]; // Add any new materials here
+window.__shaderDebug = (flag = true) => {
+  materials.forEach(mat => {
+    if (mat && mat.uniforms && mat.uniforms.uDebug) {
+        mat.uniforms.uDebug.value = flag;
+    }
+  });
+};
 __shaderDebug(true);
 </script>
 </body>
