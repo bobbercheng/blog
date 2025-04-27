@@ -21,3 +21,5 @@ My perfect solution reflects my engineering-management experience:
 - **Know when to pivot.** Continuous tweaks eventually hit a wall because changes must stay consistent. Sometimes you need a foundational shift—like switching from Python to Rust—to break through.  
 
 With this approach, vibe coding becomes not just quick but also precise enough to achieve “perfect” algorithms.  
+
+![Determining-DNA-Health-1745783396220.jpeg](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/pictures/Determining-DNA-Health-1745783396220.jpeg)
