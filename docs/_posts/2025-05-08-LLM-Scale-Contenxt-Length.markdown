@@ -6,6 +6,10 @@ categories: PIM
 tags: PIM
 ---
 
+{% raw %}
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+{% endraw %}
+
 I was asked for scaling up a system very often recently. Scaling up normally means you adds more resource for better result before you reach the limit. We also want to go beyond the limit sometime. I recently needs to understand a legacy system with 100 MB code. I cannot put it to the latest Open AI GPT 4.1 with up to 1,047,576 tokens context window. I tried several ways with GPT 4.1. Each call costs me about 1 dollar with long context length and the output is not good. Why LLM cannot scale up to long context length even I already pay for the expensive call. I will explain it by math, hardware here.
 
 
@@ -15,9 +19,9 @@ Attention weights are computed through the softmax function applied to attention
 
 $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d}}\right) V$$
 
-* $Q, K, V$ are $n \times d$ matrices.
-* $n$ is the context length.
-* $d$ is the embedding dimension.
+* \\(Q, K, V\\) are \\(n \times d\\) matrices.
+* \\(n\\) is the context length.
+* \\(d\\) is the embedding dimension.
 
 Softmax is applied row-wise on the scaled dot-product matrix:
 
@@ -30,11 +34,11 @@ Each attention output is thus a **weighted average** of all tokens in the contex
 
 | Issue                        | Mathematical Explanation                                     | Consequence                                       |
 | ---------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| Softmax dilution             | $\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^n e^{x_j}}$ | Less focused attention weights                    |
-| Noise accumulation           | Signal-to-noise ratio decreases as $O(\frac{1}{n^2})$        | Relevant info obscured by irrelevant tokens      |
-| Positional embedding degradation | Accuracy $\sim \frac{1}{n}$                                 | Positional info becomes less reliable            |
-| Numerical instability        | Exponential scaling $e^{QK^T}$                             | Computational instability                         |
-| Limited parameters           | Capacity per token $\sim \frac{\text{Params}}{n}$            | Reduced representation per token                  |
+| Softmax dilution             | $$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^n e^{x_j}}$$ | Less focused attention weights                    |
+| Noise accumulation           | Signal-to-noise ratio decreases as $$O(\frac{1}{n^2})$$        | Relevant info obscured by irrelevant tokens      |
+| Positional embedding degradation | Accuracy $$\sim \frac{1}{n}$$                                 | Positional info becomes less reliable            |
+| Numerical instability        | Exponential scaling $$e^{QK^T}$$                             | Computational instability                         |
+| Limited parameters           | Capacity per token $$\sim \frac{\text{Params}}{n}$$            | Reduced representation per token                  |
 
 Thus, from the theoretical and mathematical perspective, increasing context length without increasing model complexity or employing specialized architectural modifications (**sparse attention**, **rotary embeddings**, **ALiBi**, **sliding window attention**) inevitably results in degraded performance.
 
