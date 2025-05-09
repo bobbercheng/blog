@@ -8,7 +8,32 @@ tags: PIM
 
 {% raw %}
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // 1. Select the UL with id="markdown-toc"
+  var toc = document.getElementById("markdown-toc");
+  if (!toc) return;
+
+  // 2. Create the sidebar wrapper and apply your sidebar class
+  var sidebar = document.createElement("div");
+  sidebar.className = "toc-sidebar";
+
+  // 3. Move the TOC into that sidebar
+  sidebar.appendChild(toc);
+
+  // 4. Inject the sidebar into the DOM (before your main content)
+  //    Adjust selector to match your theme’s content container
+  var container =
+    document.querySelector(".content-wrapper") ||
+    document.querySelector("main") ||
+    document.body;
+  container.insertBefore(sidebar, container.firstChild);
+});
+</script>
 {% endraw %}
+
+* Table of contents
+{:toc}
 
 I was asked for scaling up a system very often recently. Scaling up normally means you adds more resource for better result before you reach the limit. We also want to go beyond the limit sometime. I recently needs to understand a legacy system with 100 MB code. I cannot put it to the latest Open AI GPT 4.1 with up to 1,047,576 tokens context window. I tried several ways with GPT 4.1. Each call costs me about 1 dollar with long context length and the output is not good. Why LLM cannot scale up to long context length even I already pay for the expensive call. I will explain it by math, hardware here.
 
