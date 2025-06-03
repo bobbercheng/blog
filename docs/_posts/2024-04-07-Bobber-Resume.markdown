@@ -111,7 +111,7 @@ Education: 
 -   Computer & Applications, Shanghai Jiao Tong University
     
 
--   Physics, SiChuan University
+-   Physics, SiChuan University, Chengdu
     
 
 Certification:
