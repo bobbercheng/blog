@@ -52,13 +52,13 @@ I am passionate about leveraging  cutting-edge techs to create/enhance brand val
   
 ### Geek speak:  
 My strongest is to build self-growing platforms with extensible services/apps in maintainable, scalable and reusable code in months.  
-I am also professionally proficient in Java/Python/Golang/C++/C, React Typescript and GenAI.
+I am also professionally proficient in Kubernetes/serverless, Python/Java/, Rust/C, Oracle/PostGreSQL/NoSQL/Hadoop + React Typescript and LLM Agents/ML.
 
 ## PROFESSIONAL EXPERIENCE
 
-Loblaw Digital  Software  Engineer manager, Toronto  (2023  -)
+Loblaw Digital  Software  Engineer manager, Toronto  (2023  - Now)
 
--   Built personalization platform from zero  with  distributed services and applications to  provide customized  purchase experience for millions of users with 100 RPS and less than 0.2s service latency.
+-   Built personalization platform from zero with distributed services and applications to provide customized purchase experience for millions of users with 100 RPS and less than 0.2s service latency. Tech stack: GCP + Kubernetes + EC2 + NOSQL + Postgres + Java Sprintboot + Typescript + Python + Vertex/Azure AI.
     
 
 -   Delivered  GenAI platform of code self-improvement for all engineers with 1+  million code suggestions and 20% acceptance rate.
@@ -72,7 +72,7 @@ Loblaw Digital  Software  Engineer manager, Toronto  (2023  -)
 
 CSC Generation(U.S.)  Engineer manager, Remote (2022  -2023)
 
--   Built a high-performance eCommer platform team with 5-7 people to normalize agile software development in CSC shared service department.
+-   Built a high-performance eCommer platform team with 5-7 people to normalize agile software development in CSC shared service department. Tech stack: AWS + serverless + EC2+ NOSQL + Postgres + Typescript + Python.
     
 
 -   Delivered API/AI first product information management system to merch  millions of products with NoSQL graph DB and cloud event driven architecture, [https://aws.amazon.com/blogs/database/how-csc-generation-powers-product-discovery-with-knowledge-graphs-using-amazon-neptune/](https://aws.amazon.com/blogs/database/how-csc-generation-powers-product-discovery-with-knowledge-graphs-using-amazon-neptune/).
@@ -83,7 +83,7 @@ CSC Generation(U.S.)  Engineer manager, Remote (2022  -2023)
 
 Intrado  Associate Development Manager, Mississauga (2019 - 2021)
 
--   Managed technical teams and focal points for development issues to deliver new features to Intrado conference products monthly.
+-  Managed technical teams and focal points for development issues to deliver new features to Intrado conference products monthly. Tech stack: GCP Container + NOSQL + Oracle + Java + Native + React + Typescript + Rust/WebWASM.
     
 
 -   Provided guidance to project leaders in all aspects including project management and solution design. Accountable for delivery across multiple projects resulting in expected business solutions with 30% reduction of escalation issues.
@@ -97,7 +97,7 @@ Intrado  Associate Development Manager, Mississauga (2019 - 2021)
 
 West  Team Leader, Shanghai (2007 - 2019)
 
--   Led agile team to deliver web-based applications to Intrado conference products that include InterCall Conference manager.
+-   Led agile team to deliver web-based applications to Intrado conference products that include InterCall Conference manager. Tech stack: Container + Oracle + C++/Java + Native + React + Javascript.
     
 
 -   Applied machine learning to software UI development for generating code from UI and accelerate development.
@@ -119,13 +119,13 @@ Certification:
 -   NVIDIA-Certified Associate: AI Infrastructure and Operations
     
 
--   SAFE Scrum master
+-   SAFe Scrum master by SAFe
     
 
 -   Kaggle Machine learning Expert
     
 
--   Project Management Professional (PMP)
+-   Project Management Professional (PMP) by PMI
 
 
 [my Resume]: https://bobbercheng.github.io/blog/resume/2024/04/07/Bobber-Resume.html
