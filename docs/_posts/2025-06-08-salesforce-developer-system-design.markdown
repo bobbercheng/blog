@@ -81,11 +81,17 @@ tags: Salesforce
     theme: 'default',
     securityLevel: 'loose'
   });
+  window.diagrams = {};
   
   // Convert code blocks to mermaid diagrams with zoom controls
   document.querySelectorAll('pre > code.language-mermaid').forEach((codeBlock, index) => {
     const diagramContent = codeBlock.textContent;
     const diagramId = `mermaid-diagram-${index}`;
+    
+    // Store diagram content if it doesn't exist
+    if (!window.diagrams[diagramId]) {
+      window.diagrams[diagramId] = diagramContent;
+    }
     
     // Create container with zoom controls
     const container = document.createElement('div');
@@ -163,18 +169,25 @@ function jsBtoa(data) {
 
 function genPakoLink(graphMarkdown, editMode) {
   const jGraph = {
+    grid: true,
     code: graphMarkdown,
     mermaid: { theme: 'default' },
-  };
-
+    panZoom: true,
+    rough: false,
+    updateDiagram: true,
+    renderCount: 5,
+    updateEditor: false,
+    "autoSync": true
+  }
+  
   const byteStr = jsStringToByte(JSON.stringify(jGraph));
 
   const deflated = pako.deflate(byteStr);
 
-  const dEncode = jsBtoa(deflated);
+  const dEncode = "pako:" + jsBtoa(deflated);
 
   const link =
-    `http://mermaid.live/${editMode ? 'edit' : 'view'}#pako:` +
+    `http://mermaid.live/${editMode ? 'edit' : 'view'}#` +
     dEncode.replace('+', '-').replace('/', '_');
 
   return link;
@@ -186,26 +199,20 @@ function genPakoLink(graphMarkdown, editMode) {
      if (!diagram) return;
      
      // Get the original diagram content
-     const diagramContent = diagram.textContent.trim();
+     //const diagramContent = diagram.textContent.trim();
+     const diagramContent = window.diagrams[diagramId];
+     console.log("diagramContent:" + diagramContent);
      
      // Encode the diagram content for URL
      try {
        // Try to use pako compression if available
        if (window.pako) {
-         console.log('Open live diagram with pako link');
          const url = genPakoLink(diagramContent);
+         console.log('Open live diagram with pako link ' + url);
          window.open(url, '_blank');
        }
      } catch (error) {
        console.error('Error encoding diagram:', error);
-       // Fallback: copy content to clipboard and open mermaid.live
-       navigator.clipboard.writeText(diagramContent).then(() => {
-         alert('Diagram content copied to clipboard. Paste it in Mermaid Live.');
-         window.open('https://mermaid.live/', '_blank');
-       }).catch(() => {
-         alert('Please copy the diagram manually and paste it in Mermaid Live.');
-         window.open('https://mermaid.live/', '_blank');
-       });
      }
    };
    
