@@ -56,7 +56,10 @@ I am also professionally proficient in Kubernetes/serverless, Python/Java/, Rust
 
 ## PROFESSIONAL EXPERIENCE
 
-Loblaw Digital  Software  Engineer manager, Toronto  (2023  - Now)
+Vexorium  Co-founder, Toronto  (2025  - Now)
+- Innovate IT service with GenAI to maximize business impact/output with less cost.
+
+Loblaw Digital  Software  Engineer manager, Toronto  (2023  - 2025)
 
 -   Built personalization platform from zero with distributed services and applications to provide customized purchase experience for millions of users with 100 RPS and less than 0.2s service latency. Tech stack: GCP + Kubernetes + EC2 + NOSQL + Postgres + Java Sprintboot + Typescript + Python + Vertex/Azure AI.
     
