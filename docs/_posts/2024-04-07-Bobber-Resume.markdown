@@ -57,7 +57,9 @@ I am also professionally proficient in Kubernetes/serverless, Python/Java/, Rust
 ## PROFESSIONAL EXPERIENCE
 
 Vexorium  Co-founder, Toronto  (2025  - Now)
-- Innovate IT service with GenAI to maximize business impact/output with less cost.
+- Developed DB agent and modernized complex databases, successfully migrated hundreds of critical Oracle stored procedures, in just a few hours—not months.
+- Did science discovery and resolved the hardest technical challenges that exist beyond the capabilities of contemporary AI coding models, delivering innovative solutions.
+- Developed maintenance agent and optimized complex operational workflows, we enabled a client to reduce their maintenance costs by 10% within the first month.
 
 Loblaw Digital  Software  Engineer manager, Toronto  (2023  - 2025)
 
