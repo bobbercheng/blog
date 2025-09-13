@@ -44,6 +44,7 @@ Things I've been doing lately:
 - GenAI platform of code self-improvement for all engineers.  
 - Build Personalization platform from zero to customize consumers/patients  purchase journey.  
 - API/AI first product information management system for retailer front/backend.
+- Coding a lots.
 
 - Level up medium level engineers to excellent in 1  year.  
   
@@ -51,8 +52,8 @@ Things I've been doing lately:
 I am passionate about leveraging  cutting-edge techs to create/enhance brand value through economical solutions and growth-oriented teams. I excel in motivating teams with  psychological safety and clear technological vision, driving initiatives to successful completion.  
   
 ### Geek speak:  
-My strongest is to build self-growing platforms with extensible services/apps in maintainable, scalable and reusable code in months.  
-I am also professionally proficient in Kubernetes/serverless, Python/Java/, Rust/C, Oracle/PostGreSQL/NoSQL/Hadoop + React Typescript and LLM Agents/ML.
+My strongest is to build self-growing AI natived platforms with extensible services/apps in maintainable, scalable and reusable code in months.  
+I am also professionally proficient in LLM Agents/ML, Kubernetes/serverless, Python/Java/, Rust/C, Oracle/PostGreSQL/NoSQL/Hadoop and React Typescript.
 
 ## PROFESSIONAL EXPERIENCE
 
