@@ -4,7 +4,7 @@ title: About Bobber
 permalink: /about/
 ---
 
-I'm Bobber Cheng, ![Bobber Cheng](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/pictures/bobber.png){: width="250" },  an inclusive AI engineer leader, enjoying reading science fiction, writing coding and sharing management experience. My supper power is to bring happiness and tech excellence to teams.
+I'm Bobber Cheng, ![Bobber Cheng](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/pictures/bobber.png){: width="250" }, co-fouder of [Vexorium Technologies Inc.](https://www.vexorium.net/), an inclusive AI engineer leader, enjoying reading science fiction, writing coding and sharing management experience. My supper power is to bring happiness and tech excellence to teams.
 You can checkout [my Blog], [my Resume], [my Github], [my Kaggle] [my Huggingface], [My twitter] and [my Linkedin].
 
 [my Blog]: https://bobbercheng.github.io/blog/

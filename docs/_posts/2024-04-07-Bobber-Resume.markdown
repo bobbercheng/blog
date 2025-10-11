@@ -44,6 +44,7 @@ Things I've been doing lately:
 - GenAI platform of code self-improvement for all engineers.  
 - Build Personalization platform from zero to customize consumers/patients  purchase journey.  
 - API/AI first product information management system for retailer front/backend.
+- Coding a lots.
 
 - Level up medium level engineers to excellent in 1  year.  
   
@@ -51,13 +52,15 @@ Things I've been doing lately:
 I am passionate about leveraging  cutting-edge techs to create/enhance brand value through economical solutions and growth-oriented teams. I excel in motivating teams with  psychological safety and clear technological vision, driving initiatives to successful completion.  
   
 ### Geek speak:  
-My strongest is to build self-growing platforms with extensible services/apps in maintainable, scalable and reusable code in months.  
-I am also professionally proficient in Kubernetes/serverless, Python/Java/, Rust/C, Oracle/PostGreSQL/NoSQL/Hadoop + React Typescript and LLM Agents/ML.
+My strongest is to build self-growing AI natived platforms with extensible services/apps in maintainable, scalable and reusable code in months.  
+I am also professionally proficient in LLM Agents/ML, Kubernetes/serverless, Python/Java/, Rust/C, Oracle/PostGreSQL/NoSQL/Hadoop and React Typescript.
 
 ## PROFESSIONAL EXPERIENCE
 
 Vexorium  Co-founder, Toronto  (2025  - Now)
-- Innovate IT service with GenAI to maximize business impact/output with less cost.
+- Developed DB agent and modernized complex databases, successfully migrated hundreds of critical Oracle stored procedures, in just a few hours—not months.
+- Did science discovery and resolved the hardest technical challenges that exist beyond the capabilities of contemporary AI coding models, delivering innovative solutions.
+- Developed maintenance agent and optimized complex operational workflows, we enabled a client to reduce their maintenance costs by 10% within the first month.
 
 Loblaw Digital  Software  Engineer manager, Toronto  (2023  - 2025)
 
