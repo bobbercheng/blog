@@ -32,3 +32,14 @@ $content-width: 100%;
   .table-of-contents {
     display: none;
   }
+
+  /* Scale specific trace image to half page width */
+  img[src$="trace_per029_udf_t_voc_sum_daily.png"] {
+    width: 50%;
+    height: auto;
+  }
+
+  img[src$="PER029_UDF_T_VOC_SUM_Daily.png"] {
+    width: 50%;
+    height: auto;
+  }

@@ -243,8 +243,9 @@ function genPakoLink(graphMarkdown, editMode) {
 I have a complex stored procedure like ![complex stored procedure](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/pictures/PER029_UDF_T_VOC_SUM_Daily.png) in SQL server that depends 
 some tables, functions. I need to migrate it as lot of similar SPs to Postgres. Normally it takes a senior DB engineer 1-2 hours for one port if all dependencies are ready. This is a typical mechanical task for DB expert, not hard but need operations with domain knowledge and experiences.  In [Vexorium](https://www.vexorium.net/), we do it in different way. We build the agent with super intelligence that could surpass senior experts. One key feature of super agent is able to work on hard task hours days just by self reflection without human assistant. During our experiences, two LLM models demos great capabilities of self reflection and validation, one is Gemini 2.5 Pro from Google, it takes 12 rounds reflection to pass final validation. The other is GPT-5 from OpenAI, it takes 10 rounds reflection. The agent takes less than half hour to complete the migration, ![trace_per029_udf_t_voc_sum_daily](https://raw.githubusercontent.com/bobbercheng/blog/main/docs/pictures/trace_per029_udf_t_voc_sum_daily.png).
 
+Above stored procedure is just a small part of big IT project/product in big companies. In decades, all IT departments is struggling to modernize legacy systems including me as it's too complex and take too much effort/risk. With super intelligence, we show different possibility for all IT modernization. 
 
-
+Please DM me @ [my Linkedin] if you are interested in super intelligence.
 
 {% raw %}
 <script src="https://giscus.app/client.js"
