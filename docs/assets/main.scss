@@ -32,11 +32,3 @@ $content-width: 100%;
   .table-of-contents {
     display: none;
   }
-
-  /* Keep original size for specific images in the 2025-10-11 post */
-  img[src$="PER029_UDF_T_VOC_SUM_Daily.png"],
-  img[src$="trace_per029_udf_t_voc_sum_daily.png"] {
-    max-width: none;
-    width: auto;
-    height: auto;
-  }
