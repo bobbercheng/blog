@@ -31,6 +31,7 @@ github_username:  bobbercheng
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 # Conversion
 markdown: kramdown
