@@ -58,9 +58,9 @@ I am also professionally proficient in LLM Agents/ML, Kubernetes/serverless, Pyt
 ## PROFESSIONAL EXPERIENCE
 
 Vexorium  Co-founder, Toronto  (2025  - Now)
-- Developed DB agent and modernized complex databases, successfully migrated hundreds of critical Oracle stored procedures, in just a few hours—not months.
-- Did science discovery and resolved the hardest technical challenges that exist beyond the capabilities of contemporary AI coding models, delivering innovative solutions.
-- Developed maintenance agent and optimized complex operational workflows, we enabled a client to reduce their maintenance costs by 10% within the first month.
+- Developed IT modernized DB agents and successfully migrated hundreds of critical databases in just a few hours—not months.
+- Developed maintenance agent and optimized complex operational workflows, we enabled a big retailer company to reduce their maintenance costs by 10% within the first month.
+- Did science discovery and resolved the hardest technical challenges e.g. IMO beyond the capabilities of contemporary AI coding models, delivering innovative solutions.
 
 Loblaw Digital  Software  Engineer manager, Toronto  (2023  - 2025)
 
