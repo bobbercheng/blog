@@ -58,9 +58,10 @@ I am also professionally proficient in LLM Agents/ML, Kubernetes/serverless, Pyt
 ## PROFESSIONAL EXPERIENCE
 
 Vexorium  Co-founder, Toronto  (2025  - Now)
-- Developed DB agent and modernized complex databases, successfully migrated hundreds of critical Oracle stored procedures, in just a few hours—not months.
-- Did science discovery and resolved the hardest technical challenges that exist beyond the capabilities of contemporary AI coding models, delivering innovative solutions.
-- Developed maintenance agent and optimized complex operational workflows, we enabled a client to reduce their maintenance costs by 10% within the first month.
+- DB Agent: Developed DB agent and modernized complex databases/DA report, successfully migrated hundreds of critical Oracle DB and legacy DA reports, in just a few hours—not months.
+- Maintenance Optimization: Developed maintenance agent and optimized complex operational workflows, we enabled a client to reduce their maintenance costs by 10% within the first month.
+- Talk2Data: Realtime voice agent for enterprise data and knowledge base with same quality as ChatGPT and controlled LLM models.
+- Reproduced SOTA science/math discovery with self-hosted models, https://github.com/bobbercheng/IMO25.
 
 Loblaw Digital  Software  Engineer manager, Toronto  (2023  - 2025)
 
